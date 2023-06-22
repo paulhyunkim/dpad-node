@@ -1,4 +1,7 @@
 import mongoose from 'mongoose'
+import config from '../config'
+
+const mongoURL = config.mongoURL
 
 export default async function connectDatabase(): Promise<void> {
   const mongoURL = 'mongodb+srv://paulhyunkim:password1234@dpad.nplbhqh.mongodb.net/?retryWrites=true&w=majority'

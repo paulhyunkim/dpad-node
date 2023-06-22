@@ -1,14 +1,14 @@
-import mongoose, { Schema, Document } from 'mongoose';
-import { Channel } from './channel';
+import mongoose, { Schema, Document } from 'mongoose'
+import { Channel } from './channel'
 
 export interface Stream extends Document {
-  url: string;
-  channel: Channel['_id'];
-  viewerCount: number;
-  startTime?: Date;
-  title?: string;
-  gameName?: string;
-  chatURL?: string;
+  url: string
+  channel: Channel['_id']
+  viewerCount: number
+  startTime?: Date
+  title?: string
+  gameName?: string
+  chatURL?: string
 }
 
 const streamSchema: Schema = new Schema({
@@ -22,6 +22,6 @@ const streamSchema: Schema = new Schema({
   title: String,
   gameName: String,
   chatURL: String,
-});
+})
 
-export default mongoose.model<Stream>('Stream', streamSchema);
+export default mongoose.model<Stream>('Stream', streamSchema)

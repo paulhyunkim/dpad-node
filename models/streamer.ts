@@ -2,7 +2,7 @@ import mongoose, { Document, Schema } from 'mongoose'
 
 export enum Platform {
   Twitch = 'twitch',
-  YouTube = 'youTube',
+  YouTube = 'youtube',
 }
 
 export interface Streamer extends Document {
