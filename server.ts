@@ -7,72 +7,73 @@ import connectDatabase from './db/connect'
 import { updateStreamURLs } from './db/streamers'
 import { Channel } from './models/channel'
 import { Stream } from './models/stream'
+import { scrapeLiveVideoIDs } from './scraping'
 
-const scrapeLiveVideoIDs = async (channelHandles: string[]): Promise<string[]> => {
-  const liveVideoIDs: string[] = []
+// const scrapeLiveVideoIDs = async (channelHandles: string[]): Promise<string[]> => {
+//   const liveVideoIDs: string[] = []
 
-  for (const channelHandle of channelHandles) {
-    const videoId = await scrapeLiveVideoID(channelHandle)
-    if (videoId) {
-      liveVideoIDs.push(videoId)
-    }
-  }
+//   for (const channelHandle of channelHandles) {
+//     const videoId = await scrapeLiveVideoID(channelHandle)
+//     if (videoId) {
+//       liveVideoIDs.push(videoId)
+//     }
+//   }
 
-  return liveVideoIDs
-}
+//   return liveVideoIDs
+// }
 
-const scrapeLiveVideoID = async (channelHandle: string): Promise<string | null> => {
-  const url = `https://www.youtube.com/${channelHandle}/streams`
+// const scrapeLiveVideoID = async (channelHandle: string): Promise<string | null> => {
+//   const url = `https://www.youtube.com/${channelHandle}/streams`
 
-  try {
-    const { data } = await axios.get(url)
-    const $ = cheerio.load(data)
-    let ytInitialData: any = null
+//   try {
+//     const { data } = await axios.get(url)
+//     const $ = cheerio.load(data)
+//     let ytInitialData: any = null
 
-    const context: any = { ytInitialData: null }
-    vm.createContext(context)
+//     const context: any = { ytInitialData: null }
+//     vm.createContext(context)
 
-    $('script').each((i, element) => {
-      const scriptText = $(element).html()
-      if (scriptText && scriptText.includes('var ytInitialData = ')) {
-        const decodedScriptText = he.decode(scriptText)
-        const script = new vm.Script(decodedScriptText)
-        script.runInContext(context)
-      }
-    })
+//     $('script').each((i, element) => {
+//       const scriptText = $(element).html()
+//       if (scriptText && scriptText.includes('var ytInitialData = ')) {
+//         const decodedScriptText = he.decode(scriptText)
+//         const script = new vm.Script(decodedScriptText)
+//         script.runInContext(context)
+//       }
+//     })
 
-    ytInitialData = context.ytInitialData;
+//     ytInitialData = context.ytInitialData;
 
-    if (ytInitialData === null) {
-      console.error('Failed to find ytInitialData in script.')
-      return null
-    }
+//     if (ytInitialData === null) {
+//       console.error('Failed to find ytInitialData in script.')
+//       return null
+//     }
 
-    const videoRenderers = jp.JSONPath({
-      path: '$..videoRenderer',
-      json: ytInitialData,
-    })
+//     const videoRenderers = jp.JSONPath({
+//       path: '$..videoRenderer',
+//       json: ytInitialData,
+//     })
 
-    const filteredVideoRenderers = videoRenderers.filter((videoRenderer: any) => {
-      const thumbnailOverlays = videoRenderer.thumbnailOverlays || []
-      const hasThumbnailOverlayWithStyleLive = thumbnailOverlays.some(
-        (overlay: any) => overlay?.thumbnailOverlayTimeStatusRenderer?.style === 'LIVE'
-      )
+//     const filteredVideoRenderers = videoRenderers.filter((videoRenderer: any) => {
+//       const thumbnailOverlays = videoRenderer.thumbnailOverlays || []
+//       const hasThumbnailOverlayWithStyleLive = thumbnailOverlays.some(
+//         (overlay: any) => overlay?.thumbnailOverlayTimeStatusRenderer?.style === 'LIVE'
+//       )
 
-      return thumbnailOverlays.length > 0 && hasThumbnailOverlayWithStyleLive
-    })
+//       return thumbnailOverlays.length > 0 && hasThumbnailOverlayWithStyleLive
+//     })
 
-    const firstVideoRenderer = filteredVideoRenderers[0]
-    const videoId = firstVideoRenderer?.videoId || null
+//     const firstVideoRenderer = filteredVideoRenderers[0]
+//     const videoId = firstVideoRenderer?.videoId || null
 
-    console.log(`Found live video with ID ${videoId}`)
+//     console.log(`Found live video with ID ${videoId}`)
 
-    return videoId
-  } catch (error) {
-    console.error('Error occurred while scraping live video ID:', error)
-    return null
-  }
-}
+//     return videoId
+//   } catch (error) {
+//     console.error('Error occurred while scraping live video ID:', error)
+//     return null
+//   }
+// }
 
 async function run(): Promise<void> {
   try {
@@ -86,7 +87,7 @@ async function run(): Promise<void> {
   } catch (error) {
     console.error('Error occurred while running the app:', error)
   }
-}ß
+}
 
 run().catch(console.dir)
 

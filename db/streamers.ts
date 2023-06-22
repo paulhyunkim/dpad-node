@@ -1,5 +1,5 @@
 import { exec } from 'child_process'
-import StreamerModel, { Streamer } from '../models/streamer'
+import Streamer from '../models/streamer'
 
 export async function updateStreamURLs(): Promise<void> {
   const streamers: string[] = ['ironmouse']
@@ -19,11 +19,7 @@ export async function updateStreamURLs(): Promise<void> {
 
       console.log(`Extracted m3u8 URL of ${m3u8URL} for ${streamer}`)
 
-      StreamerModel.updateOne({ name: streamer }, { $set: { m3u8URL } }, { upsert: true }, (err) => {
-        if (err) {
-          console.error('Failed to update stream URL:', err)
-        }
-      })
+      Streamer.updateOne({ name: streamer }, { $set: { m3u8URL } }, { upsert: true })
     })
   }
 }
