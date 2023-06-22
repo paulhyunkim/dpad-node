@@ -1,18 +1,17 @@
-import mongoose, { Document, Schema } from 'mongoose'
+import Realm from "realm"
+import { StreamerSchema } from "../schemas"
 
-export enum Platform {
-  Twitch = 'twitch',
-  YouTube = 'youtube',
+export class Streamer extends Realm.Object<Streamer> {
+  _id!: Realm.BSON.ObjectId
+  name?: string
+  m3u8URL?: string
+  static schema = StreamerSchema
 }
 
-export interface Streamer extends Document {
-  name: string
-  m3u8URL: string
-}
+// import Realm from "realm";
 
-const streamerSchema: Schema = new Schema({
-  name: String,
-  m3u8URL: String,
-})
-
-export default mongoose.model<Streamer>('Streamer', streamerSchema)
+// export type Streamer = {
+//   _id: Realm.BSON.ObjectId;
+//   m3u8URL?: string;
+//   name?: string;
+// };

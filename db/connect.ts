@@ -1,23 +1,37 @@
 import mongoose from 'mongoose'
 import config from '../config'
+import Realm from 'realm'
 
 const mongoURL = config.mongoURL
 
+// export default async function connectDatabase(): Promise<void> {
+//   const mongoURL = 'mongodb+srv://paulhyunkim:password1234@dpad.nplbhqh.mongodb.net/?retryWrites=true&w=majority'
+//   const dbName = 'Dpad'
+
+//   await mongoose.connect(mongoURL, {
+//     // useNewUrlParser: true,
+//     // useUnifiedTopology: true,
+//     // apiVersion: ServerApiVersion.v1,
+//     // serverSelectionTimeoutMS: 5000,
+//     // socketTimeoutMS: 45000,
+//     dbName
+//   })
+
+//   console.log('Connected to MongoDB')
+// }
+
 export default async function connectDatabase(): Promise<void> {
-  const mongoURL = 'mongodb+srv://paulhyunkim:password1234@dpad.nplbhqh.mongodb.net/?retryWrites=true&w=majority'
-  const dbName = 'Dpad'
-
-  await mongoose.connect(mongoURL, {
-    // useNewUrlParser: true,
-    // useUnifiedTopology: true,
-    // apiVersion: ServerApiVersion.v1,
-    // serverSelectionTimeoutMS: 5000,
-    // socketTimeoutMS: 45000,
-    dbName
-  })
-
-  console.log('Connected to MongoDB')
-}
+    const realmApp = new Realm.App({ id: config.realmAppID })
+  
+    try {
+      await realmApp.logIn(Realm.Credentials.anonymous())
+      console.log('Connected to MongoDB Realm')
+  
+      // Add your additional MongoDB Realm setup code here
+    } catch (error) {
+      console.error('Failed to connect to MongoDB Realm:', error)
+    }
+  }
 
 
 
